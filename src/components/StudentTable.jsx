@@ -10,7 +10,7 @@ import {
   Button,
   Typography,
   Box,
-} from "@mui/material";
+} from "@mui/material" ;
 
 function StudentTable({ students, deleteStudent, editStudent }) {
   if (students.length === 0) {
