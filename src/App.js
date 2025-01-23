@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
@@ -27,8 +27,16 @@ const theme = createTheme({
 });
 
 function App() {
-  const [students, setStudents] = useState([]);
+  const [students, setStudents] = useState(() => {
+    const savedStudents = localStorage.getItem("students");
+    return savedStudents ? JSON.parse(savedStudents) : [];
+  });
+
   const [editingStudent, setEditingStudent] = useState(null);
+
+  useEffect(() => {
+    localStorage.setItem("students", JSON.stringify(students));
+  }, [students]);
 
   const addStudent = (student) => {
     const newStudent = { ...student, id: Date.now().toString() };
@@ -36,7 +44,11 @@ function App() {
   };
 
   const updateStudent = (updatedStudent) => {
-    setStudents(students.map((student) => (student.id === updatedStudent.id ? updatedStudent : student)));
+    setStudents(
+      students.map((student) =>
+        student.id === updatedStudent.id ? updatedStudent : student
+      )
+    );
     setEditingStudent(null);
   };
 
@@ -64,8 +76,16 @@ function App() {
           >
             Student Management System
           </Typography>
-          <StudentForm addStudent={addStudent} updateStudent={updateStudent} editingStudent={editingStudent} />
-          <StudentTable students={students} deleteStudent={deleteStudent} editStudent={editStudent} />
+          <StudentForm
+            addStudent={addStudent}
+            updateStudent={updateStudent}
+            editingStudent={editingStudent}
+          />
+          <StudentTable
+            students={students}
+            deleteStudent={deleteStudent}
+            editStudent={editStudent}
+          />
         </Box>
       </Container>
     </ThemeProvider>
